@@ -112,7 +112,7 @@ export default function Hero() {
 
     {/* Mission Statement */}
     <div className="max-w-2xl mx-auto">
-      <p className="text-lg text-slate-400 font-light leading-relaxed bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+      <p className="text-sm md:text-lg text-slate-400 font-light leading-relaxed bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
         Using <span className="text-cyan-300">AI-powered facial recognition</span> to match missing persons with unidentified bodies, helping authorities quickly identify individuals and close cases with <span className="text-blue-300">accuracy and compassion</span>.
       </p>
     </div>
