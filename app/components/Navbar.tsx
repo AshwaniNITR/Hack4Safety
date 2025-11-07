@@ -91,7 +91,7 @@ export default function Navbar() {
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
     { name: "Report Missing Person", href: "/report" },
-    { name: "Unidentified Cases", href: "/" },
+    { name: "Unidentified Cases", href: "/unidentified" },
     { 
       name: "AI Match Finder", 
       href: "/",
