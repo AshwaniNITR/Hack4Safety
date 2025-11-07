@@ -96,7 +96,7 @@ export default function Navbar() {
       name: "AI Match Finder", 
       href: "/",
     },
-    { name: "Dashboard", href: "/" },
+    { name: "Dashboard", href: "/dashboard" },
     // { name: "Events", href: "#events" },
     // { name: "Contacts", href: "#contacts" },
     // { name: "Gallery", href: "#gallery" },
