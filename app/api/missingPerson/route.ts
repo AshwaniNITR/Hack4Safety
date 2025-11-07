@@ -19,6 +19,28 @@ const connectDB = async () => {
   }
 };
 
+interface MissingPerson {
+  _id: string;
+  name: string;
+  age?: number;
+  gender?: string;
+  address?: string;
+  contactNumber?: string;
+  dateMissing: string;
+  placeLastSeen?: string;
+  clothingDescription?: string;
+  physicalFeatures?: string;
+  imageUrl: string;
+  embedding: number[];
+  status: string;
+  reportFiledBy?: {
+    name?: string;
+    designation?: string;
+    policeStation?: string;
+  };
+  createdAt: string;
+}
+
 // Function to get facial embeddings from your AI model
 const getFacialEmbedding = async (imageBuffer: Buffer): Promise<number[]> => {
   try {
@@ -55,9 +77,9 @@ const getFacialEmbedding = async (imageBuffer: Buffer): Promise<number[]> => {
     console.log('Extracted embedding length:', embedding.length);
     
     return embedding;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generating embeddings:', error);
-    throw new Error(`Failed to process facial recognition: ${error.message}`);
+    throw new Error(`Failed to process facial recognition: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
@@ -162,13 +184,13 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing missing person report:', error);
     
     return NextResponse.json(
       {
         error: 'Failed to process report',
-        details: error.message || 'An unexpected error occurred',
+        details: error instanceof Error ? error.message : 'An unexpected error occurred',
       },
       { status: 500 }
     );
@@ -185,7 +207,7 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
     const skip = parseInt(searchParams.get('skip') || '0');
 
-    const query: any = {};
+    const query: Partial<MissingPerson> = {};
     if (status) {
       query.status = status;
     }
@@ -208,10 +230,10 @@ export async function GET(req: NextRequest) {
         hasMore: skip + limit < total,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching missing persons:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch missing persons', details: error.message },
+      { error: 'Failed to fetch missing persons', details: error instanceof Error ? error.message : 'An unexpected error occurred' },
       { status: 500 }
     );
   }

@@ -101,8 +101,8 @@ export default function UnidentifiedPersonsPage() {
       } else {
         throw new Error('Invalid data format received');
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setAllMissingPersons([]);
       setFilteredPersons([]);
     } finally {

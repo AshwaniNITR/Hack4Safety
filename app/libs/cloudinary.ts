@@ -9,7 +9,7 @@ cloudinary.config({
 interface CloudinaryResponse {
   secure_url: string;
   public_id: string;
-  [key: string]: any;
+  [key: string]: string | number;
 }
 
 export const uploadToCloudinary = async (

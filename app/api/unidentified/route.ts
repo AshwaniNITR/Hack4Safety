@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get('search') || '';
 
     // Build query - only fetch records with status "Missing"
-    const query: Record<string, any> = { status: 'Missing' };
+    const query: Record<string,any> = { status: 'Missing' };
 
     // Optional: Add search functionality
     if (search) {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Build sort object
-    const sort: any = {};
+    const sort: Record<string, any> = {};
     sort[sortBy] = sortOrder;
 
     // Fetch missing persons with status "Missing"
@@ -70,13 +70,13 @@ export async function GET(req: NextRequest) {
         hasMore: skip + limit < total,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching unidentified persons:', error);
     return NextResponse.json(
       { 
         success: false,
         error: 'Failed to fetch unidentified persons', 
-        details: error.message 
+        details: error instanceof Error ? error.message : 'An unexpected error occurred'
       },
       { status: 500 }
     );

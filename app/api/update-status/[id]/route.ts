@@ -6,12 +6,12 @@ import connectToDatabase from "@/app/libs/connectToDb";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     await connectToDatabase();
 
-    const { id } = await params;
+    const { id } = context.params;
     const body = await request.json();
     
     const {
