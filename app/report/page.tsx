@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Upload, User, MapPin, Camera, FileText, Send } from 'lucide-react';
-
+import Navbar from '../components/Navbar';
 export default function MissingPersonForm() {
   const [formData, setFormData] = useState({
     name: '',
@@ -62,7 +62,7 @@ export default function MissingPersonForm() {
         formDataToSend.append('image', image);
       }
 
-      const response = await fetch('/api/missing-persons', {
+      const response = await fetch('/api/missingPerson', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -108,6 +108,7 @@ export default function MissingPersonForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-12 px-4 sm:px-6 lg:px-8 font-[Orbitron]">
+      <Navbar/>
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400/60 rounded-full animate-pulse" />

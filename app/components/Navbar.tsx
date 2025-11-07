@@ -90,7 +90,7 @@ export default function Navbar() {
   const menuItems: MenuItem[] = [
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
-    { name: "Report Missing Person", href: "/" },
+    { name: "Report Missing Person", href: "/report" },
     { name: "Unidentified Cases", href: "/" },
     { 
       name: "AI Match Finder", 

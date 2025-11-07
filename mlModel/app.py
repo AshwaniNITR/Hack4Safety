@@ -1,38 +1,40 @@
 from flask import Flask, request, jsonify
-import torch
-import torch.nn.functional as F
-from facenet_pytorch import MTCNN, InceptionResnetV1
+from flask_cors import CORS
+import numpy as np
 from PIL import Image
 import io
+from keras_facenet import FaceNet
+from numpy.linalg import norm
 
 app = Flask(__name__)
+CORS(app)
 
 # -------------------- Setup --------------------
-device = torch.device("cpu")
-
-# Load models
-print("🚀 Loading models...")
-mtcnn = MTCNN(image_size=160, margin=20, post_process=True, device=device)
-model = InceptionResnetV1(pretrained='vggface2').eval().to(device)
-print("✅ Models loaded successfully!")
+print("🚀 Loading FaceNet model (TensorFlow)...")
+embedder = FaceNet()
+print("✅ Model loaded successfully!")
 
 # -------------------- Helper Functions --------------------
 def extract_face_embedding(img_bytes):
-    """Detects, crops, aligns, and extracts facial embedding."""
+    """Detects faces and extracts embeddings using keras-facenet."""
     img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
-    face = mtcnn(img)
-    if face is None:
+    img_array = np.array(img)
+    
+    # keras-facenet internally detects and aligns faces
+    embeddings = embedder.embeddings([img_array])
+    
+    if len(embeddings) == 0:
         return None
-
-    face = face.unsqueeze(0).to(device)
-    with torch.no_grad():
-        emb = model(face)
-    emb = F.normalize(emb, p=2, dim=1)
+    
+    # L2 normalize
+    emb = embeddings[0]
+    emb = emb / norm(emb)
     return emb
 
 
 def cosine_similarity(a, b):
-    return F.cosine_similarity(a, b).item()
+    """Compute cosine similarity between two embeddings."""
+    return np.dot(a, b) / (norm(a) * norm(b))
 
 
 # -------------------- ROUTE 1: Compare two faces --------------------
@@ -52,11 +54,11 @@ def compare_faces():
             return jsonify({"error": "Face not detected in one or both images"}), 400
 
         sim = cosine_similarity(emb1, emb2)
-        threshold = 0.60
+        threshold = 0.40
         result = "Same person" if sim > threshold else "Different person"
 
         return jsonify({
-            "similarity": round(sim, 4),
+            "similarity": round(float(sim), 4),
             "threshold": threshold,
             "result": result
         })
@@ -78,8 +80,7 @@ def get_embeddings():
         if emb is None:
             return jsonify({"error": "No face detected in the image"}), 400
 
-        # Convert tensor to Python list for JSON serialization
-        embedding_list = emb.squeeze(0).tolist()
+        embedding_list = emb.tolist()
 
         return jsonify({
             "embedding_dim": len(embedding_list),

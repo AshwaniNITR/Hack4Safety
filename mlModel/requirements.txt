@@ -1,9 +1,8 @@
-flask
-torch
-flask-cors
-torchvision
-facenet-pytorch
-pillow
+Flask
+Flask-Cors
+scipy
+tensorflow
+keras-facenet
 numpy
-requests
+Pillow
 gunicorn
